@@ -202,7 +202,7 @@ Every light on the block getting colder
 Kept the money in a shoebox under the bed
 Lit a candle for the dreams I never said`;
 const PRICE = 199, FULL = 249, RUSH = 25;
-const FORM_ENDPOINT = "";   // e.g. https://formspree.io/f/xxxxxxx (empty = prototype, nothing is sent)
+const FORM_ENDPOINT = "https://script.google.com/macros/s/AKfycbwYclNvarsI-N1vaZObj8F5g8gQWfEC75QfMNFHpqwUFk9xmjDAFd6mARv6SBl6ybXc/exec";   // e.g. https://formspree.io/f/xxxxxxx (empty = prototype, nothing is sent)
 const ALLOW_FILE = false;            // public site: links only (form services can't carry big video files)
 const CREDIT = "Edit & visuals: Torn Tape → [your Torn Tape link]";
 
@@ -336,6 +336,7 @@ const VIEWS = {
     </div>
     <label class="f" for="notesIn">Anything else we should know? (optional)</label>
     <input id="notesIn" type="text" value="${esc(S.notes)}">
+    <input id="hp" name="website" type="text" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0">
     <div class="when">Delivery <b>3–5 business days</b></div>
     <table class="sum" style="margin-top:14px">
       <tr><td>Full video edit${S.creditAgree ? " (with credit)" : ""}</td><td>$${base()}</td></tr>
@@ -413,7 +414,7 @@ const BIND = {
 function selectCredit() { const p = document.querySelector(".policy pre"); if (!p) return; const r = document.createRange(); r.selectNodeContents(p); const s = getSelection(); s.removeAllRanges(); s.addRange(r); }
 function requestPayload() {
   return {
-    _subject: `New Torn Tape request: ${S.name || "no name"}`,
+    website: (document.getElementById("hp") || {}).value || "",
     name: S.name, email: S.email, notes: S.notes || "-",
     video_link: linkOk() ? S.link.trim() : "-", other_files: S.extra.trim() || "-",
     looks: LOOKS.filter(l => S.looks.has(l.id)).map(l => l.name).join(", "),
@@ -434,8 +435,9 @@ async function submitRequest() {
   }
   btn.disabled = true; btn.textContent = "Sending...";
   try {
-    const r = await fetch(FORM_ENDPOINT, { method: "POST", headers: { "Content-Type": "application/json", "Accept": "application/json" }, body: JSON.stringify(requestPayload()) });
-    if (!r.ok) throw new Error("status " + r.status);
+    const r = await fetch(FORM_ENDPOINT, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(requestPayload()), redirect: "follow" });
+    const res = await r.json().catch(() => ({}));
+    if (!r.ok || res.ok === false) throw new Error("status " + r.status);
     return true;
   } catch (e) {
     btn.disabled = false; btn.textContent = "Submit request";
