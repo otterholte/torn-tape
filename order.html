@@ -208,7 +208,7 @@ const CREDIT = "Edit & visuals: Torn Tape → [your Torn Tape link]";
 
 const S = {
   file: "", link: "", extra: "", looks: new Set(LOOKS.map(l => l.id)),
-  showLyrics: true, lyrics: SAMPLE,
+  showLyrics: true, lyrics: "",
   marks: {}, drawNote: "",
   grade: "keep", gradeNote: "",
   name: "", email: "", notes: "", rush: false, agree: false, creditAgree: true, step: 0,
@@ -270,7 +270,7 @@ const VIEWS = {
       <button type="button" data-show="yes" class="${S.showLyrics ? "on" : ""}" aria-pressed="${S.showLyrics}">Show lyrics on screen</button>
       <button type="button" data-show="no" class="${!S.showLyrics ? "on" : ""}" aria-pressed="${!S.showLyrics}">No lyrics on screen</button>
     </div>
-    <label class="f" for="lyrIn">${S.showLyrics ? "Paste your lyrics, one line per line (example filled in)" : "Lyrics (optional): helps us time drawings to words"}</label>
+    <label class="f" for="lyrIn">${S.showLyrics ? "Paste your lyrics, one line per line" : "Lyrics (optional): helps us time drawings to words"}</label>
     <textarea id="lyrIn" placeholder="Paste lyrics here">${esc(S.lyrics)}</textarea>
     <p class="note">Curse words are scribbled out on screen, never written.</p>`,
   drawings: () => {
